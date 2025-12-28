@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Valdemir Artes | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --surface-color: #1a1a1a;
+            --accent-color: #FFD700;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-radius: 16px;
+            --transition-speed: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --glass-bg: rgba(20, 20, 20, 0.95);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        /* SCROLLBAR PERSONALIZADA */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+        html { scrollbar-width: thin; scrollbar-color: #333 transparent; }
+
+        body {
+            font-family: 'Poppins', 'CocogooseProTrial Bold', sans-serif;
+            background: url(assets/Images/FundoPreto.png);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            width: 100%; 
+        }
+
+        /* HEADER */
+        header { 
+            width: 100%; padding: 15px 5%; 
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 10; 
+            background: url(assets/Images/FundoLaranja.png);
+            background-size: cover;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .brand { font-size: 1.3rem; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; white-space: nowrap; }
+        .brand span { color: rgba(70, 70, 70, 0.95); margin-left: 5px;}
+        .header-logo { height: 35px; width: auto; }
+
+        /* HERO TEXT ANIMATION */
+        .hero-text { 
+            text-align: center; 
+            margin: 20px auto 10px; 
+            max-width: 900px; 
+            padding: 0 15px; 
+            z-index: 2; 
+            animation: fadeInDown 1s ease; 
+            width: 100%;
+        }
+        
+        .hero-icon { 
+            height: 30px; 
+            vertical-align: middle; 
+            margin: 0 5px; 
+            max-width: 100%;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* GALERIA INFINITA E CARDS */
+        .gallery-wrapper {
+            position: relative; width: 100%; height: 350px; display: flex; align-items: center; margin-top: 20px;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .gallery { display: flex; gap: 20px; padding: 0 20px; width: max-content; animation: scroll 60s linear infinite; }
+        .gallery:hover { animation-play-state: paused; }
+        
+        .card { 
+            width: 280px; height: 200px; border-radius: var(--border-radius); 
+            overflow: hidden; cursor: pointer; transition: var(--transition-speed); 
+            filter: grayscale(100%); opacity: 0.6; border: 1px solid transparent;
+            transform: perspective(1000px) rotateY(0deg);
+            background: #222; 
+        }
+        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s transform cubic-bezier(0.23, 1, 0.32, 1); pointer-events: none; }
+        
+        .card:hover { 
+            filter: grayscale(0%); opacity: 1; 
+            transform: scale(1.08) translateY(-10px); 
+            border-color: var(--accent-color);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.2);
+            z-index: 5;
+        }
+        .card:hover img { transform: scale(1.1); }
+
+        @keyframes scroll { to { transform: translateX(-50%); } }
+
+        /* PAINEL DE PROJETOS */
+        .project-panel {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; max-width: 1100px; height: 85vh; background: var(--surface-color);
+            z-index: 2000; border-radius: 20px; border: 1px solid var(--accent-color);
+            display: none; flex-direction: row; overflow: hidden; opacity: 0; transition: 0.4s;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+        .project-panel.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .project-info { flex: 1; padding: 40px; border-right: 1px solid #333; overflow-y: auto; min-width: 300px; background: url(assets/Images/FundoLaranja.png); background-size: cover; background-position: center;}
+        
+        .project-info h2 { color: #ffffff !important; }
+        .project-info p { color: rgba(70, 70, 70, 0.95) !important; font-weight: 700; }
+
+        .project-content { flex: 2; padding: 20px; overflow-y: auto; background: #121212; position: relative; -webkit-overflow-scrolling: touch; }
+        
+        /* Grid Padrão */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+        .gallery-grid img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: 0.3s; border: 1px solid #333; }
+        .gallery-grid img:hover { transform: scale(1.03); border-color: var(--accent-color); }
+
+        /* Seções */
+        .section-title { width: 100%; color: var(--accent-color); font-size: 1rem; margin: 20px 0 10px 0; border-bottom: 1px solid #333; padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .mockup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .mockup-grid img { width: 100%; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+
+        /* SLIDER DE COMPARAÇÃO */
+        .comparison-wrapper {
+            position: relative;
+            width: 100%; max-width: 600px; height: 350px;
+            margin: 0 auto 30px auto;
+            border-radius: 12px; overflow: hidden; border: 2px solid #333;
+            background: #ffffff;
+            user-select: none;
+        }
+        
+        .comp-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 1; pointer-events: none; }
+        .comp-overlay { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; z-index: 2; border-right: 3px solid var(--accent-color); background: #ffffff; will-change: width; }
+        .comp-overlay img { position: absolute; top: 0; left: 0; height: 100%; object-fit: contain; width: auto; max-width: none !important; pointer-events: none; }
+        .comp-label { position: absolute; top: 10px; padding: 4px 8px; background: rgba(0,0,0,0.7); color: #fff; font-size: 0.7rem; border-radius: 4px; z-index: 10; pointer-events: none; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .label-left { left: 10px; color: #ccc; }
+        .label-right { right: 10px; color: var(--accent-color); }
+        .comp-slider { position: absolute; -webkit-appearance: none; appearance: none; width: 100%; height: 100%; background: transparent; outline: none; margin: 0; z-index: 3; cursor: col-resize; top: 0; left: 0; touch-action: none; }
+        .comp-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 40px; height: 350px; background: transparent; cursor: col-resize; }
+        .comp-slider::-moz-range-thumb { width: 40px; height: 350px; background: transparent; cursor: col-resize; }
+
+        /* MENU RADIAL */
+        .menu-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; }
+        .menu-toggle { 
+            width: 60px; height: 60px; background: var(--surface-color); bottom: 40px;
+            border: 2px solid var(--accent-color); border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            color: var(--accent-color); font-size: 1.4rem; cursor: pointer; 
+            z-index: 1002; position: relative; transition: 0.5s;
+        }
+        .menu-toggle:hover { box-shadow: 0 0 20px var(--accent-color); }
+        
+        .circular-menu { 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+            width: 300px; 
+            height: 300px; 
+            background: url(assets/Images/FundoLaranja.png);
+            background-size: cover;
+            border-radius: 50%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transition: 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            opacity: 0; 
+            pointer-events: none; 
+            z-index: 1001; 
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        .circular-menu.active { 
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 1; pointer-events: auto; top: -230px; 
+        }
+
+        .menu-item { 
+            position: absolute; width: 50px; height: 50px; 
+            background: rgba(32, 32, 32, 0.95); border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            color: var(--text-primary); text-decoration: none; transition: 0.3s;
+            border: var(--accent-color) 2px solid;
+            font-size: 1.1rem;
+        }
+        .menu-item:hover { 
+            background: var(--accent-color); color: #000; 
+            box-shadow: 0 0 15px var(--accent-color);
+            border: rgba(70, 70, 70, 0.95) 1px solid;
+        }
+
+        .info-center { text-align: center; width: 130px; transition: 0.3s; }
+        
+        /* ESTILO DA LOGO CENTRAL */
+        .menu-center-logo {
+            width: 80px; 
+            height: auto; 
+            display: block; 
+            margin: 0 auto 5px auto; 
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        #infoText { font-size: 0.85rem; line-height: 1.2;}
+        #infoText strong { display: block; color: rgba(70, 70, 70, 0.95); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); opacity: 0; pointer-events: none; transition: 0.5s; z-index: 999; }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* MODAL DE IMAGEM */
+        .image-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .image-modal.active { display: flex; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .close-panel {
+            position: absolute; top: 10px; right: 15px; 
+            font-size: 2.2rem; color: #fff; cursor: pointer; z-index: 2001;
+            background: rgba(0,0,0,0.3); width: 40px; height: 40px; 
+            border-radius: 50%; text-align: center; line-height: 35px;
+        }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 900px) {
+            .gallery-wrapper { height: 280px; }
+            .card { width: 220px; height: 160px; }
+            .hero-icon { max-height: 100px; width: auto; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-text { margin-top: 10px; }
+            .hero-text img { height: auto !important; width: auto; max-width: 85%; margin: 5px 0; }
+            .project-panel { flex-direction: column; width: 95%; height: 92vh; max-height: 92vh; border-radius: 12px; }
+            .project-info { border-right: none; border-bottom: 1px solid #333; flex: none; height: auto; padding: 20px; position: relative;}
+            .project-content { flex: 1; padding: 15px; }
+            .comparison-wrapper { height: 220px; margin-bottom: 20px; }
+            .circular-menu { width: 260px; height: 260px; top: -200px; }
+            .circular-menu.active { top: -200px; }
+            .gallery-wrapper { height: 220px; margin-top: 10px; }
+            .card { width: 200px; height: 140px; }
+        }
+
+        @media (max-width: 380px) {
+            .brand { font-size: 1.1rem; }
+            .header-logo { height: 30px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .menu-toggle { width: 55px; height: 55px; bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="project-panel" id="projectPanel">
+        <span class="close-panel" id="closePanel">&times;</span>
+        
+        <div class="project-info">
+            <h2 id="pTitle" style="color: var(--accent-color); margin-bottom: 10px; padding-right: 30px; font-size: 1.5rem;">Título</h2>
+            <p id="pDesc" style="color: var(--text-secondary); line-height: 1.5; font-size: 0.95rem;">Descrição...</p>
+        </div>
+        
+        <div class="project-content" id="pContent"></div>
+    </div>
+
+    <div class="image-modal" id="imageModal">
+        <span class="close-modal" id="closeModal" style="position: absolute; top: 20px; right: 20px; color: #fff; font-size: 2.5rem; cursor: pointer; background: rgba(0,0,0,0.5); padding: 0 15px; border-radius: 50%;">&times;</span>
+        <img src="" class="modal-content" id="modalImg" style="max-width: 95%; max-height: 80%; border: 2px solid var(--accent-color); border-radius: 8px; background: #fff; object-fit: contain;">
+    </div>
+
+    <header>
+        <div class="brand">Valdemir<span>Artes</span></div>
+        <img src="assets/SVG/logo.svg" alt="Logo" class="header-logo">
+    </header>
+
+    <div class="hero-text" style="display: flex; flex-direction: column; align-items: center;">
+        <img src="assets/SVG/texto - design grafico.svg" alt="Design Grafico" class="hero-icon" style="height: 70px;">
+        <img src="assets/SVG/texto - manuscrito.svg" alt="Cada traço é um sentimento" class="hero-icon" style="height: 140px;"><br>
+        <img src="assets/SVG/texto - caixa alta.svg" alt="Cada pincelada uma historia" class="hero-icon">
+    </div>
+    
+    <div class="gallery-wrapper">
+        <div class="gallery" id="heroGallery" style="margin-bottom: 60px;"></div>
+    </div>
+
+    <div class="menu-container">
+        <nav class="circular-menu" id="circularMenu">
+            <div class="info-center">
+                <p class="info-text" id="infoText">
+                    <img src="assets/SVG/logo.svg" alt="Logo Central" class="menu-center-logo">
+                    Menu<br><strong>Principal</strong>
+                </p>
+            </div>
+            
+            <a href="#" class="menu-item" data-cat="realismo" data-title="Desenho" data-desc="Realista"><i class="fas fa-portrait"></i></a>
+            <a href="#" class="menu-item" data-cat="logo" data-title="Criação" data-desc="De Logo"><i class="fas fa-pen-nib"></i></a>
+            <a href="#" class="menu-item" data-cat="logotipo" data-title="Criação" data-desc="De Logotipo"><i class="fas fa-font"></i></a>
+            <a href="#" class="menu-item" data-cat="vetorizacao" data-title="Vetorização" data-desc="De Logo"><i class="fas fa-bezier-curve"></i></a>
+            
+            <a href="#" class="menu-item" data-cat="social" data-title="Social" data-desc="Media"><i class="fas fa-share-nodes"></i></a>
+            <a href="#" class="menu-item" data-cat="about" data-title="Sobre" data-desc="Mim"><i class="fas fa-user"></i></a>
+        </nav>
+        
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars" id="toggleIcon" style="transition: 0.4s;"></i>
+        </div>
+    </div>
+
+    <script>
+        const categoryData = {
+            realismo: {
+                title: "Desenho Realista",
+                desc: "Galeria dedicada à precisão do grafite e carvão. Retratos que capturam a alma.",
+                type: 'gallery',
+                content: [
+                    "assets/images/image (1).jpg",
+                    "assets/images/image (2).jpg",
+                    "assets/images/image (3).jpg",
+                    "assets/images/image (4).jpg",
+                    "assets/images/image (5).jpg",
+                    "assets/images/image (6).jpg",
+                    "assets/images/image (7).jpg",
+                    "assets/images/image (8).jpg",
+                    "assets/images/image (9).jpg",
+                    "assets/images/image (10).jpg"
+                ]
+            },
+            logo: {
+                title: "Criação de Logo",
+                desc: "Desenvolvimento de símbolos visuais que representam sua empresa.",
+                type: 'mix',
+                mockups: [
+                    "assets/images/mockup4.png",
+                    "assets/images/mockup5.png"
+                ],
+                logos: [
+                    "assets/SVG/logo (1).svg",
+                    "assets/SVG/logo (2).svg"
+                ]
+            },
+            logotipo: {
+                title: "Criação de Logotipo",
+                desc: "Trabalho focado na tipografia e na identidade nominal da marca.",
+                type: 'mix',
+                mockups: [
+                    "assets/images/mockup1.png",
+                    "assets/images/mockup2.png",
+                    "assets/images/mockup3.png"
+                ],
+                logos: [
+                    "assets/SVG/logotipo (1).svg",
+                    "assets/SVG/logotipo (2).svg",
+                    "assets/SVG/logotipo (3).svg",
+                    "assets/SVG/logotipo (4).svg"
+                ]
+            },
+            vetorizacao: {
+                title: "Vetorização de Logo",
+                desc: "Transformação de imagens raster para vetores escaláveis. Arraste para comparar.",
+                type: 'comparison',
+                pairs: [
+                    { before: "assets/images/logo2.png", after: "assets/SVG/01_Vetorização.svg" },
+                    { before: "assets/images/logo1.png", after: "assets/SVG/03_Vetorização.svg" },
+                    { before: "assets/images/logo3.png", after: "assets/SVG/02_Vetorização.svg" }
+                ]
+            },
+            social: {
+                title: "Social Media",
+                desc: "Design criativo para posts de Instagram, Facebook e campanhas digitais.",
+                type: 'gallery',
+                content: [
+                    "assets/images/post1.png",
+                    "assets/images/post2.png",
+                ]
+            },
+            about: {
+                title: "Sobre Mim",
+                desc: "Conheça um pouco mais sobre minha história e paixão pela arte.",
+                type: 'profile',
+                photo: "assets/SVG/logoAmarela.svg",
+                bio: "Olá! Sou Valdemir, um artista apaixonado por transformar sentimentos em traços visuais. Com experiência em design gráfico e arte manual, busco em cada projeto não apenas entregar uma imagem, mas contar uma história única através de cores, formas e texturas."
+            }
+        };
+
+        // --- POPULAR O CARROSSEL (Hero) ---
+        const heroGallery = document.getElementById('heroGallery');
+        let allImages = [];
+        
+        if(categoryData.realismo && categoryData.realismo.content) allImages = allImages.concat(categoryData.realismo.content);
+        if(categoryData.logo && categoryData.logo.logos) allImages = allImages.concat(categoryData.logo.logos);
+        if(categoryData.social && categoryData.social.content) allImages = allImages.concat(categoryData.social.content);
+
+        const displayList = [...allImages, ...allImages];
+        
+        let carouselHTML = '';
+        displayList.forEach(src => {
+            const bgStyle = src.endsWith('.svg') ? 'background: #fff;' : '';
+            carouselHTML += `<div class="card" style="${bgStyle}"><img src="${src}" alt="Portfolio Art"></div>`;
+        });
+        
+        if(heroGallery) heroGallery.innerHTML = carouselHTML;
+
+
+        // --- LÓGICA DO MENU E PAINEL ---
+        const menuToggle = document.getElementById('menuToggle');
+        const circularMenu = document.getElementById('circularMenu');
+        const overlay = document.getElementById('overlay');
+        const infoText = document.getElementById('infoText');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const pContent = document.getElementById('pContent');
+
+        menuToggle.addEventListener('click', () => {
+            const isActive = circularMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            if(isActive) {
+                toggleIcon.classList.replace('fa-bars', 'fa-times');
+                toggleIcon.style.transform = 'rotate(90deg)';
+                arrangeItems();
+            } else {
+                toggleIcon.classList.replace('fa-times', 'fa-bars');
+                toggleIcon.style.transform = 'rotate(0deg)';
+                // Atualiza o texto e a logo ao fechar (mantém a estrutura única)
+                infoText.innerHTML = `<img src="assets/SVG/logo.svg" alt="Logo Central" class="menu-center-logo">Menu<br><strong>Principal</strong>`;
+            }
+        });
+
+        function arrangeItems() {
+            const items = document.querySelectorAll('.menu-item');
+            const radius = window.innerWidth < 768 ? 95 : 130;
+            
+            items.forEach((item, i) => {
+                const angle = (i * (360 / items.length) - 90) * (Math.PI / 180);
+                const x = Math.round(radius * Math.cos(angle));
+                const y = Math.round(radius * Math.sin(angle));
+                item.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const title = item.getAttribute('data-title');
+                const desc = item.getAttribute('data-desc');
+                infoText.style.opacity = '0';
+                setTimeout(() => {
+                    // Mantem a logo visível mesmo ao trocar o texto
+                    infoText.innerHTML = `<img src="assets/SVG/logo.svg" alt="Logo Central" class="menu-center-logo"><strong>${title}</strong>${desc}`;
+                    infoText.style.opacity = '1';
+                }, 150);
+            });
+
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const cat = item.getAttribute('data-cat');
+                const data = categoryData[cat];
+
+                if(data) {
+                    document.getElementById('pTitle').innerText = data.title;
+                    document.getElementById('pDesc').innerText = data.desc;
+                    let html = '';
+
+                    if(data.type === 'gallery') {
+                        html = '<div class="gallery-grid">';
+                        html += data.content.map(src => `<img src="${src}" class="expandable-art" alt="Art">`).join('');
+                        html += '</div>';
+                    }
+                    else if(data.type === 'mix') {
+                        html += '<h3 class="section-title">Aplicações / Mockups</h3>';
+                        html += '<div class="mockup-grid">';
+                        html += data.mockups.map(src => `<img src="${src}" class="expandable-art" alt="Mockup">`).join('');
+                        html += '</div>';
+                        html += '<h3 class="section-title">Galeria de Logos</h3>';
+                        html += '<div class="gallery-grid">';
+                        html += data.logos.map(src => `<img src="${src}" class="expandable-art" style="background: #fff;" alt="Logo">`).join('');
+                        html += '</div>';
+                    }
+                    else if(data.type === 'profile') {
+                        html = `
+                            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px;">
+                                <div style="width: 150px; height: 150px; margin-bottom: 20px;">
+                                    <img src="${data.photo}" style="width: 100%; height: 100%; object-fit: contain;">
+                                </div>
+                                <p style="color: #ccc; font-size: 1rem; line-height: 1.8; max-width: 600px;">
+                                    ${data.bio}
+                                </p>
+                                <div style="margin-top: 30px; width: 100%;">
+                                    <h3 class="section-title" style="text-align: center;">Especialidades</h3>
+                                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                        <span style="background: #333; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: #fff;">Design Gráfico</span>
+                                        <span style="background: #333; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: #fff;">Realismo</span>
+                                        <span style="background: #333; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: #fff;">Branding</span>
+                                        <span style="background: #333; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; color: #fff;">Vetorização</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    else if(data.type === 'comparison') {
+                        data.pairs.forEach((pair, index) => {
+                            html += `
+                                <div class="comparison-wrapper" id="comp-wrapper-${index}">
+                                    <div class="comp-label label-left" style="color:#000;">Raster (Antes)</div>
+                                    <img src="${pair.after}" class="comp-bg" alt="Depois"> 
+                                    
+                                    <div class="comp-overlay" id="overlay-${index}">
+                                        <img src="${pair.before}" id="overlay-img-${index}" alt="Antes"> 
+                                    </div>
+                                    
+                                    <div class="comp-label label-right">Vetor (Depois)</div>
+                                    <input type="range" min="0" max="100" value="50" class="comp-slider" 
+                                        oninput="updateSlider(this, 'overlay-${index}')">
+                                </div>
+                            `;
+                        });
+                    }
+
+                    pContent.innerHTML = html;
+                    document.getElementById('projectPanel').classList.add('active');
+                    circularMenu.classList.remove('active');
+                    
+                    if(data.type === 'comparison') {
+                        setTimeout(() => {
+                            const wrappers = document.querySelectorAll('.comparison-wrapper');
+                            wrappers.forEach((wrapper, index) => {
+                                const img = wrapper.querySelector('.comp-overlay img');
+                                if(img) img.style.width = wrapper.offsetWidth + "px";
+                            });
+                        }, 200);
+                    }
+                }
+            });
+        });
+
+        window.updateSlider = function(slider, containerId) {
+            const container = document.getElementById(containerId);
+            if(container) container.style.width = slider.value + "%";
+        }
+
+        window.addEventListener('resize', () => {
+            const wrappers = document.querySelectorAll('.comparison-wrapper');
+            wrappers.forEach((wrapper) => {
+                const img = wrapper.querySelector('.comp-overlay img');
+                if(img) img.style.width = wrapper.offsetWidth + "px";
+            });
+            
+            if(circularMenu.classList.contains('active')) {
+                arrangeItems();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const isGalleryImage = e.target.classList.contains('expandable-art');
+            const isCarouselCard = e.target.closest('.card');
+
+            if(isGalleryImage || isCarouselCard) {
+                const imgElement = isCarouselCard ? isCarouselCard.querySelector('img') : e.target;
+                
+                if (imgElement) {
+                    const src = imgElement.src;
+                    document.getElementById('modalImg').src = src;
+                    document.getElementById('imageModal').classList.add('active');
+                }
+            }
+        });
+
+        document.getElementById('closePanel').onclick = () => {
+            document.getElementById('projectPanel').classList.remove('active');
+            overlay.classList.remove('active');
+            toggleIcon.classList.replace('fa-times', 'fa-bars');
+            toggleIcon.style.transform = 'rotate(0deg)';
+        };
+
+        document.getElementById('closeModal').onclick = () => document.getElementById('imageModal').classList.remove('active');
+        
+        overlay.onclick = () => {
+            circularMenu.classList.remove('active');
+            document.getElementById('projectPanel').classList.remove('active');
+            overlay.classList.remove('active');
+            document.getElementById('imageModal').classList.remove('active');
+            toggleIcon.classList.replace('fa-times', 'fa-bars');
+            toggleIcon.style.transform = 'rotate(0deg)';
+        };
+    </script>
+    <footer style="text-align: center; padding: 20px 20px 80px 20px; color: var(--text-secondary); font-size: 0.8rem;">
+    &copy; 2025 Valdemir Artes. Todos os direitos reservados. - Desenvolvido por Tiago N. Prezepiorski.
+    </footer>
+</body>
+</html>
